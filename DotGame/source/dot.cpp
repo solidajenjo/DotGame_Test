@@ -1,9 +1,10 @@
 #include <dot.h>
 #include <behaviours.h>
 
-Dot::~Dot()
+void Dot::Clear()
 {
-	behaviours.clear();
+	for (auto b : behaviours)
+		delete b;
 }
 
 void Dot::Update(const Game& game)
@@ -16,6 +17,5 @@ void Dot::Update(const Game& game)
 
 void Dot::AddBehaviour(Behaviour* newBehaviour)
 {
-	BPtr b(newBehaviour);
-	behaviours.push_back(b);
+	behaviours.push_back(newBehaviour);
 }

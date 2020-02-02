@@ -9,6 +9,11 @@ const std::string ResourceManager::GetBasePath()
 	return basePath;
 }
 
+void ResourceManager::Clear()
+{
+	resources.clear();
+}
+
 ResourceManager::~ResourceManager()
 {
 	SDL_free(const_cast<char*>(basePath));

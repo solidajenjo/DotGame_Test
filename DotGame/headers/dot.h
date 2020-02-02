@@ -1,17 +1,26 @@
 #pragma once
 #include <vector>
 #include <memory>
+#include <behaviours.h>
 
-class Behaviour;
 class Game;
-
-typedef std::shared_ptr<Behaviour> BPtr;
 
 class Dot
 {
 public:
 	Dot(bool isLeft) : isLeft(isLeft) {};
-	~Dot();
+	void Clear();
+
+	template <class T>
+	T* GetBehaviour(Behaviour::BehaviourTypes type) const
+	{
+		for (auto b : behaviours)
+		{
+			if (b->type == type)
+				return (T*)b;
+		}
+		return nullptr;
+	}
 
 	void Update(const Game& game);
 
@@ -21,5 +30,5 @@ public:
 
 private:
 
-	std::vector<BPtr> behaviours;
+	std::vector<Behaviour*> behaviours;
 };

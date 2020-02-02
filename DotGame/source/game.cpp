@@ -25,7 +25,8 @@ Game::Game(ResourceManager& rm) : RM(rm)
 		{eResourceType::rTexture, "greenDot", "resources/textures/ClickableGreen.png"},
 		{eResourceType::rTexture, "redDot", "resources/textures/ClickableRed.png"},
 		{eResourceType::rTexture, "tileBG", "resources/textures/TileBackground.png"},
-		{eResourceType::rTexture, "tileMO", "resources/textures/TileMouseOver.png"}
+		{eResourceType::rTexture, "tileMO", "resources/textures/TileMouseOver.png"},
+		{eResourceType::rFont, "font", "resources/fonts/font.ttf|28"}
 	};
 
 	RM.LoadResources(resources);
@@ -39,38 +40,85 @@ Game::Game(ResourceManager& rm) : RM(rm)
 	modules.emplace("gameLogic", new GameLogicModule());
 
 	srand(time(NULL));
+
+	SetTimer();
 }
 
 
 bool Game::Update()
 {
+	auto logic = (GameLogicModule*)modules.at("gameLogic");
+	assert(logic);
 
-	for (auto m : modules)
-	{
-		m.second->Update(*this);
+	switch (state) {
+		case States::INTRO:
+		{
+			GetModule<RenderModule>("renderer")->RenderText((*RM.GetResource<Font>("font")).GetTTFFont(), "Ruben Ajenjo presents: The Dot Game",
+				{ 255, 255, 255, 255 }, (SCREEN_WIDTH / 2), (SCREEN_HEIGHT / 2) - 40, 15);
+
+			timer -= logic->deltaTime;
+			if (timer < 0.f)
+			{
+				state = States::PLAYING;
+				logic->Reset();
+			}
+			break;
+		}
+		case States::PLAYING:
+		{
+			for (auto m : modules)
+			{
+				m.second->Update(*this);
+			}
+
+			if (gameOver)
+			{
+				state = States::GAME_OVER;
+				SetTimer();
+			}
+			break;
+		}
+		case States::GAME_OVER:
+		{
+			GetModule<RenderModule>("renderer")->RenderText((*RM.GetResource<Font>("font")).GetTTFFont(), "Game over!",
+				{ 255, 255, 255, 255 }, (SCREEN_WIDTH / 2), (SCREEN_HEIGHT / 2) - 40, 35);
+			std::string scoreMessage = "Your final score: " + std::to_string(logic->score);
+			GetModule<RenderModule>("renderer")->RenderText((*RM.GetResource<Font>("font")).GetTTFFont(), scoreMessage,
+				{ 255, 255, 255, 255 }, (SCREEN_WIDTH / 2), (SCREEN_HEIGHT / 2), 30);
+
+			timer -= logic->deltaTime;
+			if (timer < 0.f)
+			{
+				state = States::INTRO;
+				gameOver = false;
+				SetTimer();
+			}
+			break;
+		}
 	}
-
 	for (auto m : modules)
 	{
 		m.second->PostUpdate();
 	}
-
-	auto logic = (GameLogicModule*)modules.at("gameLogic");
-	assert(logic);
-
-	if (!logic->running)
-		logic->Reset();
-
-	return !(((InputModule*)modules.at("input"))->quit || quit);
+	return !(((InputModule*)modules.at("input"))->quit);
 }
 
 void Game::Clear()
 {
+	auto logic = (GameLogicModule*)modules.at("gameLogic");
+	assert(logic);
+	logic->Reset();
+	RM.Clear();
 	for (auto m : modules)
 	{
 		delete m.second;
-	}
+	}	
 	modules.clear();
+}
+
+void Game::SetTimer()
+{
+	timer = SPLASH_SCREEN_DURATION;
 }
 
 

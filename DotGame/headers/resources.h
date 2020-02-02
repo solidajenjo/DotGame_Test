@@ -32,7 +32,7 @@ public:
 	void LoadResources(const std::vector<ResourceItem>& resources);
 	Resource::RPtr LoadResource(const ResourceItem& resource);
 	template <class T>
-	typename std::shared_ptr<T> GetResource(const std::string& name) const
+	std::shared_ptr<T> GetResource(const std::string& name) const
 	{
 		auto it = resources.find(name);
 		return it != resources.end() ? std::static_pointer_cast<T>((*it).second) : nullptr;
@@ -40,6 +40,7 @@ public:
 	SDL_Renderer* GetRenderer() { return renderer; }
 	void SetRenderer(SDL_Renderer* r) { renderer = r; }
 	const std::string GetBasePath();
+	void Clear();
 
 private:
 	SDL_Renderer* renderer;

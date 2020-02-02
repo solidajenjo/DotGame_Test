@@ -10,7 +10,10 @@ class Texture;
 class Dot;
 
 struct SDL_Window;
-struct SDL_Renderer;
+struct SDL_Renderer; 
+struct SDL_Color; 
+typedef struct _TTF_Font TTF_Font;
+
 
 typedef std::shared_ptr<Dot> DPtr;
 
@@ -30,10 +33,11 @@ public:
 	RenderModule(ResourceManager& rm);
 	~RenderModule();
 
-	void Update(const Game& game) {}
+	void Update(const Game& game) override {}
 	void PostUpdate() override;
 
 	void RenderTexture(Texture& texture, int x, int y) const;
+	void RenderText(TTF_Font* font, const std::string& text, const SDL_Color& color, uint16_t x, uint16_t y, uint16_t fontSize) const;
 	SDL_Renderer* GetRenderer() const { return renderer; }
 
 private:
@@ -51,10 +55,12 @@ public:
 	bool IsOverCell(int mouseX, int mouseY, uint8_t& cellX, uint8_t& cellY) const;
 	void GetCellScreenPos(uint8_t cellX, uint8_t cellY, int& x, int& y) const;
 	void GetRandomCell(uint8_t& cellX, uint8_t& cellY, int& x, int& y);
+	
+	int cellW, cellH;
 
 private:
 	uint16_t startX, startY, leftMargin, rightMargin, topMargin, bottomMargin;
-	int cellW, cellH;
+	
 };
 
 class InputModule : public Module
@@ -87,14 +93,19 @@ public:
 	~GameLogicModule();
 
 	void Update(const Game& game) override;
+	void PostUpdate() override;
 
+	void Stop();
 	void Reset();
+	void GetDotDestination(const Game& game, uint16_t& x, uint16_t& y) const;
+	inline DPtr GetLastDot() const { return *(--dots.end()); };
 
 	float deltaTime;
 
 	uint8_t cellX, cellY;
 	Dot* activeDot = nullptr;
 	bool running = false;
+	uint8_t score;
 
 private:
 
