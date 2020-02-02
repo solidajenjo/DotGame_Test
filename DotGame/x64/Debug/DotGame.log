@@ -1,0 +1,19 @@
+﻿  behaviours.cpp
+  game.cpp
+C:\Users\derek\Desktop\GAME_DEV\DotGame\DotGame\source\game.cpp(41,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  modules.cpp
+C:\Users\derek\Desktop\GAME_DEV\DotGame\DotGame\source\modules.cpp(222,16): warning C4244: 'initializing': conversion from 'Uint64' to 'uint32_t', possible loss of data
+  Generating Code...
+  DotGame.vcxproj -> C:\Users\derek\Desktop\GAME_DEV\DotGame\builds\Debug\DotGame.exe
+  
+          1 file(s) copied.
+          1 file(s) copied.
+          1 file(s) copied.
+          1 file(s) copied.
+          1 file(s) copied.
+          1 file(s) copied.
+  C:\Users\derek\Desktop\GAME_DEV\DotGame\DotGame\resources\textures\ClickableGreen.png
+  C:\Users\derek\Desktop\GAME_DEV\DotGame\DotGame\resources\textures\ClickableRed.png
+  C:\Users\derek\Desktop\GAME_DEV\DotGame\DotGame\resources\textures\TileBackground.png
+  C:\Users\derek\Desktop\GAME_DEV\DotGame\DotGame\resources\textures\TileMouseOver.png
+  4 File(s) copied
